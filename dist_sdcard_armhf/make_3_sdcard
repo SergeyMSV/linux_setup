@@ -1,0 +1,79 @@
+#!/bin/bash
+
+#2021-08-06
+#2021-08-02
+#2021-07-31
+
+if [ -z $5 ]
+then
+echo Error: wrong arguments.
+exit 0
+fi
+
+varUBoot=$1
+varBuildDir=$2
+varBuildRootFSDir=$3
+varBuildRoorFSBootDir=$4
+
+echo 
+echo "SD-Card"
+echo "U-Boot:             "$varUBoot
+echo "Build dir.:         "$varBuildDir
+echo "Root-FS dir.:       "$varBuildRootFSDir
+echo "Root-FS boot dir.:  "$varBuildRoorFSBootDir
+echo 
+
+if [ $5 = "pc" ]
+then
+varDisk="/dev/sdb"
+varDiskPart1="1"
+varDiskPart2="2"
+else
+varDisk="/dev/mmcblk1"
+varDiskPart1="p1"
+varDiskPart2="p2"
+fi
+
+echo ----- MAKE_SDCARD
+echo
+echo 1. Prepare disk: $varDisk
+
+umount ${varDisk}${varDiskPart1}
+umount ${varDisk}${varDiskPart2}
+
+parted -s $varDisk mklabel msdos
+parted -s $varDisk mkpart primary fat32 1Mib 101MiB
+parted -s $varDisk mkpart primary ext4 101Mib 100%
+
+#in any case of trouble:
+partprobe $varDisk
+
+echo
+echo 2. Make file systems
+
+mkfs.vfat -n BOOT -F 32 -v ${varDisk}${varDiskPart1}
+mkfs.ext4 -L ROOTFS ${varDisk}${varDiskPart2}
+
+echo
+echo 3. Copy u-boot into the disk
+
+#copy u-boot into the SDCARD
+dd if=$varBuildDir/$varUBoot of=$varDisk bs=512 seek=2
+
+echo
+echo 4. Copy ROOT-FS files
+
+mount ${varDisk}${varDiskPart2} /mnt/temp
+cp -r $varBuildRootFSDir/* /mnt/temp/
+umount ${varDisk}${varDiskPart2}
+
+echo
+echo 5. Copy BOOT files
+
+mount ${varDisk}${varDiskPart1} /mnt/temp
+cp -r $varBuildRoorFSBootDir/* /mnt/temp/
+umount ${varDisk}${varDiskPart1}
+
+echo 
+echo Do not forget to correct u-boot environment if needed.
+

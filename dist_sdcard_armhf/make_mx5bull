@@ -1,0 +1,90 @@
+#!/bin/bash
+
+#2021-08-06
+
+#
+# Use this file as template to custom linux for different boards and different purposes.
+#
+
+# Steps to build customized LINUX-sdcard
+
+# 1.1 kernel linux
+# 1.2 rootfs
+
+# 2.1 modules from (and for) kernel linux are to be installed into rootfs
+# 2.2 u-boot
+
+# 3. sd-card
+
+
+#   1.1 - 2.1 - 3
+#        /     /
+#   1.2 -     /
+#            /
+#         2.2  
+
+# Additional settings-files and applications are to be in "rootfs_[board name]"
+###################################################################################################
+
+# Set required settings in this section.
+
+varBoardName="mx5bull"
+varBuildName="Preved_2"
+
+varKernel="linux-5.13.5"
+varConfig="conf_2"
+
+varDTB="imx53-qsrb.dtb"
+
+varUBoot="u-boot.imx"
+varUBootFolder="disk.u-boot-imx_2021.01-rc.3_fs-ext4"
+
+varRootFS="rootfs"
+
+varDir="/home/sergey/mx5"
+
+###################################################################################################
+
+varRootFSApp="rootfs_"$varBoardName
+
+varBuildDir=$varDir"/"$varBuildName
+varBuildRootFSDir=$varDir"/"$varBuildName"/"$varRootFS
+varBuildRoorFSBootDir=$varDir"/"$varBuildName"/boot"
+varKernelBuildDir=$varDir"/"$varKernel"_"$varConfig
+varRootFSAppDir=$varDir"/"$varRootFSApp
+varUBootDir=$varDir"/"$varUBootFolder
+
+echo 
+echo "BOARD:              "$varBoardName
+echo "Build:              "$varBuildName
+echo "Kernel:             "$varKernel
+echo "Kernel config:      "$varConfig
+echo "DTB:                "$varDTB
+echo "Root-FS App:        "$varRootFSApp
+echo "U-Boot:             "$varUBoot", "$varUBootFolder
+echo "Path:               "$varDir
+echo "Build dir.:         "$varBuildDir
+echo "Root-FS dir.:       "$varBuildRootFSDir
+echo "Root-FS boot dir.:  "$varBuildRoorFSBootDir
+echo "Kernel Build dir.:  "$varKernelBuildDir
+echo "Root-FS App dir.:   "$varRootFSAppDir
+echo "U-Boot dir.:        "$varUBootDir
+echo 
+
+###################################################################################################
+
+sudo rm -frd $varBuildDir
+mkdir $varBuildDir
+
+sudo ./make_1.1_kernel $varDTB $varKernelBuildDir $varBuildDir $varBuildRoorFSBootDir
+
+sudo ./make_1.2_rootfs $varBuildRootFSDir $varRootFSAppDir
+
+sudo ./make_2.1_rootfsmodules $varKernelBuildDir $varBuildRootFSDir $varBuildDir
+
+sudo ./make_2.2_uboot $varUBoot $varUBootDir $varBuildDir
+
+sudo ./make_3_sdcard $varUBoot $varBuildDir $varBuildRootFSDir $varBuildRoorFSBootDir pc
+
+###################################################################################################
+

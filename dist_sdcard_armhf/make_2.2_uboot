@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#2021-08-06
+
+if [ -z $3 ]
+then
+echo Error: wrong arguments.
+exit 0
+fi
+
+varUBoot=$1
+varUBootDir=$2
+varBuildDir=$3
+
+echo 
+echo "U-BOOT"
+echo "U-Boot:             "$varUBoot
+echo "Build dir.:         "$varBuildDir
+echo "U-Boot dir.:        "$varUBootDir
+echo 
+
+rm $varBuildDir"/"$varUBoot
+
+cp $varUBootDir"/"$varUBoot $varBuildDir"/"$varUBoot
+

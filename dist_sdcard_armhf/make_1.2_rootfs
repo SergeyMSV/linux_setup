@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#2021-08-06
+
+if [ -z $2 ]
+then
+echo Error: wrong arguments.
+exit 0
+fi
+
+varBuildRootFSDir=$1
+varRootFSAppDir=$2
+
+echo 
+echo "ROOT-FS"
+echo "Root-FS dir.:       "$varBuildRootFSDir
+echo "Root-FS App dir.:   "$varRootFSAppDir
+echo 
+
+rm -frd $varBuildRootFSDir
+mkdir $varBuildRootFSDir
+
+#debootstrap
+#--include=A,B,C        adds specified names to the list of base packages
+#--exclude=A,B,C        removes specified packages from the list
+
+#Included packages will be installed up on the second stage
+
+debootstrap --foreign --arch=armhf\
+            --include=\
+qemu-user-static,\
+ssh,\
+nodejs\
+            bullseye $varBuildRootFSDir http://ftp.ru.debian.org/debian
+
+echo
+echo 1. /debootstrap/debootstrap --second-stage
+echo    "(I have no name!@sergey:/# /debootstrap/debootstrap --second-stage)"
+echo 2. Set root password: passwd root
+echo    "(password: 4)"
+echo 3. Add user - user1: adduser user1
+echo    "(password: 1)"
+echo In order to exit type: exit
+echo
+
+LANG=C.UTF-8 chroot $varBuildRootFSDir /bin/bash
+
+
+echo Put into rootfs my own settings and applications.
+
+cp -r $varRootFSAppDir/* $varBuildRootFSDir/
+
+

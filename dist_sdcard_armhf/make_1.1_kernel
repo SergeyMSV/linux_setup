@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#2021-08-06
+
+if [ -z $4 ]
+then
+echo Error: wrong arguments.
+exit 0
+fi
+
+varDTB=$1
+varKernelBuildDir=$2
+varBuildRoorFSBootDir=$4
+
+echo 
+echo "KERNEL"
+echo "DTB:                "$varDTB
+echo "Root-FS boot dir.:  "$varBuildRoorFSBootDir
+echo "Kernel Build dir.:  "$varKernelBuildDir
+echo 
+
+#echo
+#echo 0. Make linux in accordance with .config
+
+#cd $varKernelBuildDir
+#make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs > $varBuildDir/build.log 
+#cd ..
+
+echo
+echo 1. Make folder
+
+rm -frd $varBuildRoorFSBootDir
+mkdir $varBuildRoorFSBootDir
+
+echo
+echo 2. Copy zImage, DTB and ROOT-FS
+
+cp $varKernelBuildDir/arch/arm/boot/zImage $varBuildRoorFSBootDir/
+cp $varKernelBuildDir/arch/arm/boot/dts/$varDTB $varBuildRoorFSBootDir/
+
