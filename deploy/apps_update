@@ -1,0 +1,2 @@
+./deploy_service apptest1 undeploy
+./deploy_service apptest2 deploy

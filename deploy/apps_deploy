@@ -1,0 +1,2 @@
+./deploy_service apptest1 deploy
+./deploy_service apptest2 deploy
