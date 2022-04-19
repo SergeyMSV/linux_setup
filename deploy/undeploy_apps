@@ -1,0 +1,2 @@
+./deploy apptest1 undeploy
+./deploy apptest2 undeploy
