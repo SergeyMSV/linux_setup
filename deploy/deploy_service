@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#2022-04-19
+
+#All files that are to be deployed are in folder 'app'
+#Application consistst of files:
+# 1. binary             app            /usr/local/bin
+# 2. config             app.conf       /usr/local/etc (maybe /etc/default)
+# 3. systemd service    app.service    /usr/lib/systemd/system
+
+if [ -z $2 ]
+then
+	echo Error: wrong arguments.
+	exit 0
+fi
+
+varApp=$1
+varAppConf=$1".conf"
+varAppService=$1".service"
+
+#------------------------------------------------
+#varDirBin="test/bin"
+#varDirEtc="test/etc"
+#varDirService="test/system"
+
+varDirBin="/usr/local/bin"
+varDirEtc="/usr/local/etc"
+varDirService="/usr/lib/systemd/system"
+#------------------------------------------------
+
+if [ $2 == "deploy" ]
+then
+	echo "Deploy: $varApp"
+	
+	cp "app/"$varApp     $varDirBin"/"$varApp
+	cp "app/"$varAppConf $varDirEtc"/"$varAppConf
+	cp "app/"$varApp     $varDirService"/"$varAppService
+	#systemd enable $varAppService
+	#systemd start $varAppService
+	
+elif [ $2 == "undeploy" ]
+then
+	echo "Undeploy: $varApp"
+	
+	#systemd stop $varAppService
+	#systemd disable $varAppService
+	rm $varDirBin"/"$varApp
+	rm $varDirEtc"/"$varAppConf
+	rm $varDirService"/"$varAppService
+
+else
+	echo "That's impossible! I can't do that... :)"
+fi
+
+exit 0
