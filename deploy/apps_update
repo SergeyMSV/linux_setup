@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#2022-04-22
+
+./deploy_service gnssrcv undeploy
+./deploy_service camvc0706 undeploy
+
+#the application must be terminated before the libs can be updated
+
+rm -f /usr/lib/libboost_filesystem.so.1.77.0
+
+cp app/libboost_filesystem.so.1.77.0 /usr/lib/libboost_filesystem.so.1.77.0
+
+
+./deploy_service gnssrcv deploy
+./deploy_service camvc0706 deploy

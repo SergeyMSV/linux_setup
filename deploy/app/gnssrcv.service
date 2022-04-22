@@ -1,0 +1,15 @@
+[Unit]
+Description=GNSS
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/usr/local/bin
+ExecStart=/usr/local/bin/gnssrcv
+Restart=always
+RestartSec=15
+SuccessExitStatus=NOINPUT IOERR SIGKILL
+
+[Install]
+WantedBy=multi-user.target

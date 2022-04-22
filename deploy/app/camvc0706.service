@@ -1,0 +1,15 @@
+[Unit]
+Description=CAMVC0706
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/usr/local/bin
+ExecStart=/usr/local/bin/camvc0706
+Restart=always
+RestartSec=15
+SuccessExitStatus=NOINPUT IOERR SIGKILL
+
+[Install]
+WantedBy=multi-user.target
