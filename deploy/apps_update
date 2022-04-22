@@ -1,6 +1,8 @@
 #!/bin/bash
 
-#2022-04-22
+#2022-04-21
+
+chmod 544 deploy_service
 
 ./deploy_service gnssrcv undeploy
 ./deploy_service camvc0706 undeploy

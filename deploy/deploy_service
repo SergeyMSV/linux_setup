@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#2022-04-19 1
+#2022-04-19
 
 #All files that are to be deployed are in folder 'app'
 #Application consistst of files:
@@ -32,18 +32,21 @@ if [ $2 == "deploy" ]
 then
 	echo "Deploy: $varApp"
 	
-	cp "app/"$varApp     $varDirBin"/"$varApp
-	cp "app/"$varAppConf $varDirEtc"/"$varAppConf
-	cp "app/"$varApp     $varDirService"/"$varAppService
-	#systemd enable $varAppService
-	#systemd start $varAppService
+	cp "app/"$varApp        $varDirBin"/"$varApp
+	cp "app/"$varAppConf    $varDirEtc"/"$varAppConf
+	cp "app/"$varAppService $varDirService"/"$varAppService
+	
+	chmod 544 $varDirBin"/"$varApp
+	
+	#systemctl enable $varAppService
+	#systemctl start $varAppService
 	
 elif [ $2 == "undeploy" ]
 then
 	echo "Undeploy: $varApp"
 	
-	#systemd stop $varAppService
-	#systemd disable $varAppService
+	#systemctl stop $varAppService
+	#systemctl disable $varAppService
 	rm $varDirBin"/"$varApp
 	rm $varDirEtc"/"$varAppConf
 	rm $varDirService"/"$varAppService
